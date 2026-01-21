@@ -7,7 +7,7 @@ def call(Map config = [:]) {
     def imageTag = config.imageTag ?: error("Image tag is required")
     def manifestsPath = config.manifestsPath ?: 'k8s'
     def gitCredentials = config.gitCredentials ?: 'github-credentials'
-    def gitUserName = config.gitUserName ?: 'ganeshkhairedevops'
+    def gitUserName = config.gitUserName ?: 'Jenkins CI'
     def gitUserEmail = config.gitUserEmail ?: 'ganeshkhaire14@gmail.com'
     
     echo "Updating Kubernetes manifests with image tag: ${imageTag}"
@@ -26,11 +26,11 @@ def call(Map config = [:]) {
         // Update deployment manifests with new image tags - using proper Linux sed syntax
         sh """
             # Update main application deployment - note the correct image name is ganeshkhaire14/easy-shop-app
-            sed -i "s|image: ganeshkhaire14/easy-shop-app:.*|image: ganeshkhaire14/easy-shop-app:${imageTag}|g" ${manifestsPath}/08-easyshop-deployment.yaml
+            sed -i "s|image: ganeshkhaire14/easyshop-app:.*|image: ganeshkhaire14/easyshop-app:${imageTag}|g" ${manifestsPath}/08-easyshop-deployment.yaml
             
             # Update migration job if it exists
             if [ -f "${manifestsPath}/12-migration-job.yaml" ]; then
-                sed -i "s|image: ganeshkhaire14/easy-shop-app-migration:.*|image: ganeshkhaire14/easy-shop-app-migration:${imageTag}|g" ${manifestsPath}/12-migration-job.yaml
+                sed -i "s|image: ganeshkhaire14/easyshop-migration:.*|image: ganeshkhaire14/easyshop-migration:${imageTag}|g" ${manifestsPath}/12-migration-job.yaml
             fi
             
             # Ensure ingress is using the correct domain
